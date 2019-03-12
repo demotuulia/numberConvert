@@ -10,6 +10,11 @@ namespace Lib\Models;
 class Convert
 {   
     
+    /**
+     * Translations
+     * 
+     * @var array
+     */
     private $translations = [
         'en' => [
             1 => [
@@ -53,16 +58,22 @@ class Convert
 
 
     /**
+     * Convert string to number
      * 
      * @param string $numberStr
+     * @return float 
      */
     public function toNumber($numberStr, $separator= ' ') {
+        
+        // Read parts to array
         $parts = explode($separator, $numberStr);
         $parts = array_reverse($parts);
-        $factor = 1;
-        $result = 0;
-        
        
+        
+        //
+        // Read array parts and convert
+        //s
+        $result = 0;
         $index = 0;
         $current = $parts[$index];
        
@@ -83,25 +94,28 @@ class Convert
         ];
         foreach ($bigNumbers as $factor => $string) {
             if ($current == $string || $current == $string) {
-                if ($string == 'thousand'  && 1==2) {
-                    
-                   
-                     $subParts = [];
-                    for($i = $index + 1; $i < count($parts); $i++) {
-                        $subParts[] = $parts[$i] ;
+                
+                // Convert strings having X hundred thousand .... 
+                if ($string == 'thousand' ) {
+                    $subParts = [];
+                    for ($i = $index + 1; $i < count($parts); $i++) {
+                        $subParts[] = $parts[$i];
                     }
-                   $subParts  = array_reverse($subParts);
-                     $subParts = implode('#', $subParts);
-                     
+                    $subParts = array_reverse($subParts);
+                    $subParts = implode(' ', $subParts);
+                    // Here happens something strange
+                    // If With implode below I get for example 'two hundred twenty'
+                    // I get result with the to number 20
+                    // If I hard code the follwoing : $subParts = 'two hundred twenty'
+                    // It works
+                    $number = $this->toNumber($subParts, ' ') * 1000;
+                } else {
                     
-                    
-                      $number = $this->toNumber($subParts, '#');
-                        var_dump($number);
-                     
-                }
-                $number = $parts[$index + 1];
+                } $number = $parts[$index + 1];
+               
+                
                 if (strpos($number, '-')) {
-                   
+                    // Convert - serated number like 'twenty-four'
                     $number = $this->toNumber($number, '-');
                     $value = $number * $factor;
                     $result = $result + ($value );
@@ -116,7 +130,5 @@ class Convert
         }
         return number_format($result);
     }
-    
-   
-    
+
 }
