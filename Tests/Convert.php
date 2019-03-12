@@ -76,8 +76,8 @@ class TestConvert extends Test
         $result = $convert->toNumber('twenty-four thousand four hundred thirty six');
         $this->assertEquals('24,436', $result);
       
-        $result = $convert->toNumber('two hunderd twenty thousand four hundred thirty five');
-       // $this->assertEquals('220,435', $result);
+        $result = $convert->toNumber('two hundred twenty thousand four hundred thirty five');
+        $this->assertEquals('220,435', $result);
     }
 
 }
